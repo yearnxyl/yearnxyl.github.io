@@ -4,7 +4,7 @@
     <title>Java反射</title>
     <url>/2023/06/08/Java%E5%8F%8D%E5%B0%84/</url>
     <content><![CDATA[<p>反射：将类的各个组成部分封装为其他对象。</p>
-<p>Java代码在计算机中经历了三个阶段：源阶段-&gt;Class对象阶段-&gt;Runtime运行时阶段。</p>
+<p>Java代码在计算机中经历了三个阶段：源代码阶段-&gt;Class对象阶段-&gt;Runtime运行时阶段。</p>
 <p><img  
                      lazyload
                      alt="image"
@@ -25,14 +25,14 @@
                      data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/1659050135411-8ee0b254-39b0-4a46-87db-932e25cb1f06.png"
                       alt="image.png"
                 ></p>
-<p>Class类对象阶段：使用javac编译成的字节码文件经过jvm中ClassLoader的加载，在内存中生成Class类对象。Class类对象由成员变量Field、构造方法Constructor、成员方法Method组成。以上面Person对象为例，经过ClassLoader加载，name和age两个成员变量封装为Field[]对象，Person()方法封装为Constructor[]对象，eat()封装为Methods[]对象。而这个封装的过程便是反射机制。</p>
+<p>Class类对象阶段：使用javac编译成的字节码文件经过jvm中ClassLoader的加载，在内存中生成Class类对象。Class类对象由成员变量Field、构造方法Constructor、成员方法Method组成。以上面Person对象为例，经过ClassLoader加载，name和age两个成员变量封装为Field[]对象，Person(){}方法封装为Constructor[]对象，eat(){}方法封装为Methods[]对象。而这个封装的过程便是反射机制。</p>
 <p>Runtime阶段：实例化类对象，在内存中生成实例化对象。</p>
 <h3 id="获取Class类对象的四种方法"><a href="#获取Class类对象的四种方法" class="headerlink" title="获取Class类对象的四种方法"></a>获取Class类对象的四种方法</h3><p><code>反射的作用：获取Class类对象。</code></p>
 <p>针对Java代码在计算机的不同阶段，存在不同的方法来获取Class类对象。</p>
 <ol>
 <li>源代码阶段：Class.forName(“全类名”)：将字节码文件加载进内存，返回Class类对象。</li>
 <li>Class类对象阶段：类名.class：通过类名的属性class获取。</li>
-<li>实例化对象阶段：对象.getClass：getClass()方法在Object类中定义着。</li>
+<li>实例化对象阶段：对象.getClass()：getClass()方法在Object类中定义着。</li>
 <li>类加载器ClassLoader.getSystemClassLoader().loadClass(“全类名”)</li>
 </ol>
 <p>编写Person类</p>
@@ -49,8 +49,8 @@
                      data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/1660095967523-d8071b26-459f-4023-847d-0e21f5f1dc45.png"
                       alt="1660095958223.png"
                 ></p>
-<p>同一个字节码文件(*.class)，在一次程序运行过程中，只会被加载一次。因此获取的四个Class类对象是一样的。</p>
-<p>这里有一个容易混淆的地方，我们介绍了四种方法来获取Class类对象，观察其输出结果，均为<code>org.domain.Person</code>。但是java内置的Class类对象应该是<code>java.lang.Class</code>，两者有什么区别？</p>
+<p>同一个字节码文件(*.class)，在一次程序运行过程中，只会被加载一次。因此获取的四个Class类对象是相等的。</p>
+<p>这里有一个容易混淆的地方，我们介绍了四种方法来获取Class类对象，观察其输出结果，均为<code>org.domain.Person</code>。而Java内置的<code>java.lang.Class</code>也叫Class类对象，两者有什么区别和联系？</p>
 <p><code>java.lang.Class</code>不只是类对象，还是一个模板，<code>org.domain.Person</code>便是根据该模板生成的，因此<code>org.domain.Person</code>本质上也是<code>java.lang.Class</code>类对象。<code>org.domain.Person</code>下存在一个<code>getClass()</code>方法来获取<code>java.lang.Class</code>对象。</p>
 <p><img  
                      lazyload
@@ -126,7 +126,7 @@
                      data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/1661614173345-b1686b43-85d2-4908-9747-f0224cc7fde8.png"
                       alt="image.png"
                 ></p>
-<p>当然在本例中的cls3，通过<code>java.lang.Class</code>对象最后又获取到<code>java.lang.Class</code>对象是没什么意义的，这里仅仅是要了解其方法。</p>
+<p>当然在本例中的cls3，通过对<code>java.lang.Class</code>对象进行操作，最后又获取到<code>java.lang.Class</code>对象是没什么意义的，这里仅仅是要了解其方法。</p>
 <p><code>forName</code>有三个函数重载</p>
 <ul>
 <li>forName(String className)</li>
@@ -136,10 +136,10 @@
 <p>第一个是常见的获取Class的方式。查看器源代码会发现其最后会返回<code>forName0(className, true, ClassLoader.getClassLoader(caller), caller)</code></p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Class&lt;?&gt; forName(String className)</span><br><span class="line">    <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    Class&lt;?&gt; caller = Reflection.getCallerClass();</span><br><span class="line">    <span class="keyword">return</span> forName0(className, <span class="literal">true</span>, ClassLoader.getClassLoader(caller), caller);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<p>至于第二个方法，忽略中间代码，发现其最后返回<code>forName0(name, initialize, loader, caller)</code>，由此可知，方法一是对方法二的一个封装。默认了<code>initialize</code>和<code>loader</code>两个参数</p>
+<p>至于第二个方法，忽略中间代码，发现其最后返回<code>forName0(name, initialize, loader, caller)</code>，由此可知，方法二是对方法一的一个封装。默认了<code>initialize</code>和<code>loader</code>两个参数</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Class&lt;?&gt; forName(String name, <span class="type">boolean</span> initialize,</span><br><span class="line">                               ClassLoader loader)</span><br><span class="line">    <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">    Class&lt;?&gt; caller = <span class="literal">null</span>;</span><br><span class="line">    <span class="type">SecurityManager</span> <span class="variable">sm</span> <span class="operator">=</span> System.getSecurityManager();</span><br><span class="line">    <span class="keyword">if</span> (sm != <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// Reflective call to get caller class is only needed if a security manager</span></span><br><span class="line">    <span class="comment">// is present.  Avoid the overhead of making this call otherwise.</span></span><br><span class="line">    caller = Reflection.getCallerClass();</span><br><span class="line">    <span class="keyword">if</span> (loader == <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="type">ClassLoader</span> <span class="variable">ccl</span> <span class="operator">=</span> ClassLoader.getClassLoader(caller);</span><br><span class="line">    <span class="keyword">if</span> (ccl != <span class="literal">null</span>) &#123;</span><br><span class="line">    sm.checkPermission(</span><br><span class="line">    SecurityConstants.GET_CLASSLOADER_PERMISSION);</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> forName0(name, initialize, loader, caller);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<p>至于两个参数的含义<code>initialize</code>表示是否进行初始化，<code>loader</code>表示<code>ClassLoader</code>，暂不考虑<code>ClassLoader</code>的学习。</p>
+<p>至于两个参数的含义，<code>initialize</code>表示是否进行初始化，<code>loader</code>表示<code>ClassLoader</code>，暂不考虑<code>ClassLoader</code>的学习。</p>
 <p>当<code>initialize=true</code>的时候，使用forName来获取Class对象时，Class对象会自动初始化。</p>
 <p>在Java中，存在三种初始化方法。分别是<code>static&#123;&#125;</code>，<code>&#123;&#125;</code>和构造函数。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.ReflectDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectDemo7</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;static&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;&#123;&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    ReflectDemo7() &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Reflect&quot;</span>);    </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        ReflectDemo7 rf=<span class="keyword">new</span> <span class="title class_">ReflectDemo7</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -147,14 +147,16 @@
 <p>那么三者存在什么区别？</p>
 <blockquote>
 <p>Person p &#x3D; new Person(“zhangsan”,20); 该句话都做了什么事情？</p>
-<p>1，因为new用到了Person.class.所以会先找到Person.class文件并加载到内存中。</p>
-<p>2，执行该类中的static代码块，如果有的话，给Person.class类进行初始化。</p>
-<p>3，在堆内存中开辟空间，分配内存地址。</p>
-<p>4，在堆内存中建立对象的特有属性。并进行默认初始化。</p>
-<p>5，对属性进行显示初始化。</p>
-<p>6，对对象进行构造代码块初始化。</p>
-<p>7，对对象进行对应的构造函数初始化。</p>
-<p>8，将内存地址付给栈内存中的p变量。</p>
+<ol>
+<li>因为new用到了Person.class.所以会先找到Person.class文件并加载到内存中。</li>
+<li>执行该类中的static代码块，如果有的话，给Person.class类进行初始化。</li>
+<li>在堆内存中开辟空间，分配内存地址。</li>
+<li>在堆内存中建立对象的特有属性。并进行默认初始化。</li>
+<li>对属性进行显示初始化。</li>
+<li>对对象进行构造代码块初始化。</li>
+<li>对对象进行对应的构造函数初始化。</li>
+<li>将内存地址付给栈内存中的p变量。</li>
+</ol>
 </blockquote>
 <p>从上述可以看出在步骤2就已经运行<code>static&#123;&#125;</code>方法，步骤四运行<code>&#123;&#125;</code>方法，步骤六运行构造代码块。可以运行上面的代码判断顺序是否正确。</p>
 <p><img  
@@ -179,7 +181,7 @@
 <p>可以将<code>className</code>指向我们构造的恶意类。其中的<code>static&#123;&#125;</code>方法为构造的恶意方法。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">Runtime</span> <span class="variable">rt</span> <span class="operator">=</span> Runtime.getRuntime();</span><br><span class="line">            <span class="type">String</span> <span class="variable">command</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(<span class="string">&quot;calc&quot;</span>);</span><br><span class="line">            <span class="type">Process</span> <span class="variable">pr</span> <span class="operator">=</span> rt.exec(command);</span><br><span class="line">            pr.waitFor();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<p>除了使用<code>forName()</code>方法指向恶意类外，也可以使用<code>forName()</code>指向Java的内置类，通过这种方法可以省去<code>import</code>。获取Java内置类之后，若存在无参数构造方法，只要使用<code>class.newInstance()</code>，便可将其实例化（上面获取Class类构造方法提到过），而后利用其属性或方法。例如当我们获取到<code>Runtime</code>实例时，可以使用<code>exec()</code>方法来执行任意命令。</p>
+<p>除了使用<code>forName()</code>方法指向恶意类外，也可以使用<code>forName()</code>指向Java的内置类，通过这种方法可以省去<code>import</code>。获取Java内置类之后，若存在无参数构造方法，只要使用<code>class.newInstance()</code>，便可将其实例化（上面获取Class类构造方法提到过），而后利用其属性或方法。例如，如果我们可以获取到<code>Runtime</code>类实例，便可以使用<code>exec()</code>方法来执行任意命令。</p>
 <p>但是很不幸的是，很多时候<code>class.newInstance()</code>会失效。主要原因：</p>
 <ul>
 <li>类不存在无参数构造方法</li>
@@ -197,7 +199,7 @@
 <p>单例模式，属于创建类型的一种常用的软件设计模式。通过单例模式的方法创建的类在当前进程中只有一个实例（根据需要，也有可能一个线程中属于单例，如：仅线程上下文内使用同一个实例）</p>
 </blockquote>
 <p>如下代码，通过两次new产生的实例化对象是不同的。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.ReflectDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectDemo8</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ReflectDemo8</span><span class="params">()</span>&#123;&#125;;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String agrs[])</span>&#123;</span><br><span class="line">        ReflectDemo9 rf1=<span class="keyword">new</span> <span class="title class_">ReflectDemo9</span>();</span><br><span class="line">        ReflectDemo9 rf2=<span class="keyword">new</span> <span class="title class_">ReflectDemo9</span>();</span><br><span class="line">        System.out.println(rf1==rf2);<span class="comment">//false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.ReflectDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectDemo8</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ReflectDemo8</span><span class="params">()</span>&#123;&#125;;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String agrs[])</span>&#123;</span><br><span class="line">        ReflectDemo8 rf1=<span class="keyword">new</span> <span class="title class_">ReflectDemo8</span>();</span><br><span class="line">        ReflectDemo8 rf2=<span class="keyword">new</span> <span class="title class_">ReflectDemo8</span>();</span><br><span class="line">        System.out.println(rf1==rf2);<span class="comment">//false</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>但是经过单例模式实例化的对象rf1和rf2是相同的。保证了线程中只存在一个<code>ReflectDemo8</code>实例化对象。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.ReflectDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectDemo8</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ReflectDemo8 reflect=<span class="keyword">new</span> <span class="title class_">ReflectDemo8</span>();</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> ReflectDemo8 <span class="title function_">getInstance</span><span class="params">()</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> reflect;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="title function_">ReflectDemo8</span><span class="params">()</span>&#123;&#125;;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String agrs[])</span>&#123;</span><br><span class="line">        ReflectDemo8 rf1=ReflectDemo8.getInstance();</span><br><span class="line">        ReflectDemo8 rf2=ReflectDemo8.getInstance();</span><br><span class="line">        System.out.println(rf1==rf2); <span class="comment">//true</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -215,7 +217,7 @@
                      data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/1662608455979-bbd05d33-fed6-4144-9267-51728e80f3a5.png"
                       alt="image.png"
                 ></p>
-<p>后面查看<code>getRuntime</code>方法和<code>exec</code>方法，发现<code>getRuntime</code>方法是static。查阅资料并尝试后发现确实如此。<a class="link"   href="https://www.baeldung.com/java-invoke-static-method-reflection" >java-invoke-static-method<i class="fas fa-external-link-alt"></i></a></p>
+<p>后面查看<code>getRuntime</code>方法和<code>exec</code>方法，发现<code>getRuntime</code>方法是static。查阅资料并尝试后发现确实如此。Gavra-invoke-static-method](<a class="link"   href="https://www.baeldung.com/java-invoke-static-method-reflection" >https://www.baeldung.com/java-invoke-static-method-reflection<i class="fas fa-external-link-alt"></i></a>)</p>
 <p>除了使用<code>getRuntime</code>方法外。在获取Class类构造方法章节，我们提到过获取<code>private</code>构造方法的方式：<code>getDeclaredConstructors()</code>。恰巧在<code>Runtime</code>类中存在<code>private</code>构造方法。因此利用暴力反射同样可以获取<code>Runtime</code>实例化对象。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> org.ReflectDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectDemo9</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>);</span><br><span class="line">        Constructor constructor= clazz.getDeclaredConstructor();</span><br><span class="line">        constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        Runtime rt= (Runtime) constructor.newInstance();</span><br><span class="line">        clazz.getMethod(<span class="string">&quot;exec&quot;</span>,String.class).invoke(rt,<span class="string">&quot;calc&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -258,23 +260,5 @@
       <tags>
         <tag>Java安全</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2023/05/14/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a class="link"   href="https://hexo.io/" >Hexo<i class="fas fa-external-link-alt"></i></a>! This is your very first post. Check <a class="link"   href="https://hexo.io/docs/" >documentation<i class="fas fa-external-link-alt"></i></a> for more info. If you get any problems when using Hexo, you can find the answer in <a class="link"   href="https://hexo.io/docs/troubleshooting.html" >troubleshooting<i class="fas fa-external-link-alt"></i></a> or you can ask me on <a class="link"   href="https://github.com/hexojs/hexo/issues" >GitHub<i class="fas fa-external-link-alt"></i></a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
-]]></content>
   </entry>
 </search>
