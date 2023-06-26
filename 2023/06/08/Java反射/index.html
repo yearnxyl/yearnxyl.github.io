@@ -174,7 +174,7 @@
     
         <span class="article-update-date article-meta-item">
         <i class="fas fa-file-pen"></i>&nbsp;
-        <span class="pc">2023-06-09 18:34:18</span>
+        <span class="pc">2023-06-10 11:20:01</span>
     </span>
     
     
@@ -438,7 +438,7 @@
                      data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/1662608455979-bbd05d33-fed6-4144-9267-51728e80f3a5.png"
                       alt="image.png"
                 ></p>
-<p>后面查看<code>getRuntime</code>方法和<code>exec</code>方法，发现<code>getRuntime</code>方法是static。查阅资料并尝试后发现确实如此。Gavra-invoke-static-method](<a class="link"   target="_blank" rel="noopener" href="https://www.baeldung.com/java-invoke-static-method-reflection" >https://www.baeldung.com/java-invoke-static-method-reflection<i class="fas fa-external-link-alt"></i></a>)</p>
+<p>后面查看<code>getRuntime</code>方法和<code>exec</code>方法，发现<code>getRuntime</code>方法是static。查阅资料并尝试后发现确实如此。<a class="link"   target="_blank" rel="noopener" href="https://www.baeldung.com/java-invoke-static-method-reflection" >Gavra-invoke-static-method<i class="fas fa-external-link-alt"></i></a></p>
 <p>除了使用<code>getRuntime</code>方法外。在获取Class类构造方法章节，我们提到过获取<code>private</code>构造方法的方式：<code>getDeclaredConstructors()</code>。恰巧在<code>Runtime</code>类中存在<code>private</code>构造方法。因此利用暴力反射同样可以获取<code>Runtime</code>实例化对象。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.ReflectDemo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReflectDemo9</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span><span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">clazz</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;java.lang.Runtime&quot;</span>);</span><br><span class="line">        Constructor constructor= clazz.getDeclaredConstructor();</span><br><span class="line">        constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        Runtime rt= (Runtime) constructor.newInstance();</span><br><span class="line">        clazz.getMethod(<span class="string">&quot;exec&quot;</span>,String.class).invoke(rt,<span class="string">&quot;calc&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -516,6 +516,26 @@
                 </ul>
             
 
+            
+                <div class="article-nav">
+                    
+                        <div class="article-prev">
+                            <a class="prev"
+                               rel="prev"
+                               href="/2023/06/16/Java%E5%8F%8D%E5%B0%84%E5%9F%BA%E7%A1%80%E4%B8%8EURLDNS/"
+                            >
+                            <span class="left arrow-icon flex-center">
+                              <i class="fas fa-chevron-left"></i>
+                            </span>
+                                <span class="title flex-center">
+                                <span class="post-nav-title-item">Java反射基础与URLDNS</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                            </a>
+                        </div>
+                    
+                    
+                </div>
             
 
             
