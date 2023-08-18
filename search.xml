@@ -825,7 +825,7 @@
       </tags>
   </entry>
   <entry>
-    <title>TemplatesImpl和CC3</title>
+    <title>TemplatesImpl和CommonsCollections3</title>
     <url>/2023/08/17/TemplatesImpl%E5%92%8CCommonsCollections3%E9%93%BE/</url>
     <content><![CDATA[<h2 id="What-is-CommonsCollections3"><a href="#What-is-CommonsCollections3" class="headerlink" title="What is CommonsCollections3?"></a>What is CommonsCollections3?</h2><p>在字节码的动态加载章节，可以通过<code>TemplatesImpl#newTransformer()</code>来加载字节码。</p>
 <p>那么在实际的攻击中，该如何调用<code>TemplatesImpl#newTransformer()</code>？</p>
