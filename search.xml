@@ -701,8 +701,7 @@
 </blockquote>
 <p>CommonsCpllections7:</p>
 <blockquote>
-<p>Hashtable#readObject()</p>
-<p>—Hashtable#reconstitutionPut()<br>——AbstractMapDecorator#equals()<br>———AbstractMap#equals()<br>————LazyMap#get()</p>
+<p>Hashtable#readObject()<br>—Hashtable#reconstitutionPut()<br>——AbstractMapDecorator#equals()<br>———AbstractMap#equals()<br>————LazyMap#get()</p>
 </blockquote>
 ]]></content>
       <categories>
