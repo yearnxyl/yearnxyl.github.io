@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="Hexo Theme Keep">
+    <meta name="author" content="yearnxyl">
+    
+    <title>
+        
+            XMLDecoder反序列化 |
+        
+        yearnxyl
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <link rel="shortcut icon" href="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/161229155190231137135-20230608155626.svg">
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    <script id="hexo-configurations">
+    let KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"toc":{"enable":true,"number":true,"expand_all":true,"init_open":true},"style":{"primary_color":"#0066cc","logo":"https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/161229155190231137135-20230608155626.svg","favicon":"https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/161229155190231137135-20230608155626.svg","avatar":"https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/161229155190231137135-20230608155626.svg","font_size":null,"font_family":null,"hover":{"shadow":true,"scale":true},"first_screen":{"enable":true,"header_transparent":true,"background_img":"/images/bg.svg","description":"从零开始||希望你有破釜沉舟的勇气.","font_color":null,"hitokoto":true},"scroll":{"progress_bar":true,"percent":true}},"local_search":{"enable":true,"preload":true},"code_copy":{},"code_block":{"tools":{"enable":true,"style":"mac"},"highlight_theme":"obsidian"},"side_tools":{},"pjax":{"enable":true},"lazyload":{"enable":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.8"},"waline":{"server_url":null,"reaction":false,"version":2}},"post":{"author_label":{"enable":true,"auto":true,"custom_label_list":["巨佬","大佬","菜鸟"]},"word_count":{"enable":true,"wordcount":true,"min2read":true},"img_align":"center","copyright_info":true},"version":"3.6.1"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+        <span class="scroll-progress-bar"></span>
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <i class="pjax-progress-icon fas fa-circle-notch fa-spin"></i>
+    
+</div>
+
+
+<main class="page-container">
+
+    
+
+    <div class="page-main-content">
+
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="header-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/161229155190231137135-20230608155626.svg">
+                </a>
+            
+            <a class="logo-title" href="/">
+               yearnxyl
+            </a>
+        </div>
+
+        <div class="right">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                首页
+                            </a>
+                        </li>
+                    
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                归档
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/">首页</a>
+                </li>
+            
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives">归档</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle">
+
+            <div class="main-content">
+
+                
+                    <div class="fade-in-down-animation">
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">XMLDecoder反序列化</span>
+            </div>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/161229155190231137135-20230608155626.svg">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">yearnxyl</span>
+                            
+                                <span class="author-label">Lv2</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2023-10-19 21:22:26</span>
+        <span class="mobile">2023-10-19 21:22</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-12-28 17:23:41</span>
+    </span>
+    
+    
+        <span class="article-categories article-meta-item">
+            <i class="fas fa-folder"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/categories/Java%E5%AE%89%E5%85%A8/">Java安全</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fas fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Java%E5%AE%89%E5%85%A8/">Java安全</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+        <span class="article-wordcount article-meta-item">
+            <i class="fas fa-file-word"></i>&nbsp;<span>5.3k 字</span>
+        </span>
+    
+    
+        <span class="article-min2read article-meta-item">
+            <i class="fas fa-clock"></i>&nbsp;<span>26 分钟</span>
+        </span>
+    
+    
+</div>
+
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <h2 id="XMLEncoder和XMLDecoder"><a href="#XMLEncoder和XMLDecoder" class="headerlink" title="XMLEncoder和XMLDecoder"></a>XMLEncoder和XMLDecoder</h2><p>XMLEncoder和XMLDecoder是Java中自带的类。两者的作用分别是将对象转换为XML格式，或者将XML格式的字符串反序列化为对象的形式。</p>
+<p>举例如下：</p>
+<p>创建User类，类中必须要有⽆参数构造⽅法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String Name;</span><br><span class="line">    <span class="keyword">private</span> String Sex;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> Age;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">User</span><span class="params">()</span>&#123;&#125;;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">User</span><span class="params">(String name,String sex,<span class="type">int</span> age)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.Name=name;</span><br><span class="line">        <span class="built_in">this</span>.Sex=sex;</span><br><span class="line">        <span class="built_in">this</span>.Age=age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;setName has been called&quot;</span>);</span><br><span class="line">        Name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSex</span><span class="params">(String sex)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;setSex has been called&quot;</span>);</span><br><span class="line">        Sex = sex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAge</span><span class="params">(<span class="type">int</span> age)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;setAge has been called&quot;</span>);</span><br><span class="line">        Age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getName has been called&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> Name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getSex</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getSex has been called&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> Sex;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getAge</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getAge has been called&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> Age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;User&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;Name=&#x27;&quot;</span> + Name + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, Sex=&#x27;&quot;</span> + Sex + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, Age=&quot;</span> + Age +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>使用XMLEncoder将User类转换成XML格式</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231129212205527.png"
+                      alt="image-20231129212205527"
+                ></p>
+<p>可以看到在转换的过程中调用了User类中的set和get方法。转换后结果如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">java</span> <span class="attr">version</span>=<span class="string">&quot;1.8.0_341&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.beans.XMLDecoder&quot;</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">object</span> <span class="attr">class</span>=<span class="string">&quot;org.example.User&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">void</span> <span class="attr">property</span>=<span class="string">&quot;age&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">int</span>&gt;</span>18<span class="tag">&lt;/<span class="name">int</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">void</span> <span class="attr">property</span>=<span class="string">&quot;name&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">string</span>&gt;</span>liming<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">void</span> <span class="attr">property</span>=<span class="string">&quot;sex&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">string</span>&gt;</span>boy<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">java</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接下来将其由XML转换为类，转换的过程中调用了类的set方法，很明显这里是在给User中的成员变量赋值。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231129213149198.png"
+                      alt="image-20231129213149198"
+                ></p>
+<p>如果将XML更改为如下内容，转换过程中便会命令执行。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;java version=&quot;1.8.0_341&quot; class=&quot;java.beans.XMLDecoder&quot;&gt;</span><br><span class="line">  &lt;object class=&quot;java.lang.ProcessBuilder&quot;&gt;</span><br><span class="line">   &lt;array class=&quot;java.lang.String&quot; length=&quot;1&quot;&gt;</span><br><span class="line">    &lt;void index=&quot;0&quot;&gt;&lt;string&gt;calc&lt;/string&gt;&lt;/void&gt;</span><br><span class="line">   &lt;/array&gt;</span><br><span class="line">   &lt;void method=&quot;start&quot;&gt;&lt;/void&gt;</span><br><span class="line">  &lt;/object&gt;</span><br><span class="line"> &lt;/java&gt;</span><br></pre></td></tr></table></figure>
+
+<p>很明显这与<code>xmlDecoder.readObject()</code>有关，接下来对其流程进行分析。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231129214650228.png"
+                      alt="image-20231129214650228"
+                ></p>
+<h2 id="XMLDecoder流程分析"><a href="#XMLDecoder流程分析" class="headerlink" title="XMLDecoder流程分析"></a>XMLDecoder流程分析</h2><p>流程分析相当乱，仅仅是简单跟了一下，大致了解了XML文件是如何解析的，所以记录的并不详细，有一部分地方也是通过动态调试直接定位的。</p>
+<p>若只想了解为何会产生命令执行，建议直接看第三章。</p>
+<h3 id="XMLDecoder"><a href="#XMLDecoder" class="headerlink" title="XMLDecoder"></a>XMLDecoder</h3><p>首先进入<code>XMLDecoder#readObject()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">readObject</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (parsingComplete())</span><br><span class="line">            ? <span class="built_in">this</span>.array[<span class="built_in">this</span>.index++]</span><br><span class="line">            : <span class="literal">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里先执行了<code>parsingComplete()</code>，跟进该方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">parsingComplete</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.input == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.array == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((<span class="built_in">this</span>.acc == <span class="literal">null</span>) &amp;&amp; (<span class="literal">null</span> != System.getSecurityManager())) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">SecurityException</span>(<span class="string">&quot;AccessControlContext is not set&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        AccessController.doPrivileged(<span class="keyword">new</span> <span class="title class_">PrivilegedAction</span>&lt;Void&gt;() &#123;</span><br><span class="line">            <span class="keyword">public</span> Void <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                XMLDecoder.<span class="built_in">this</span>.handler.parse(XMLDecoder.<span class="built_in">this</span>.input);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, <span class="built_in">this</span>.acc);</span><br><span class="line">        <span class="built_in">this</span>.array = <span class="built_in">this</span>.handler.getObjects();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>抛开java本身的安全机制代码外，这里执行了<code>XMLDecoder.this.handler.parse(XMLDecoder.this.input)</code>，<code>this.handler</code>为<code>DocumentHandler</code>，<code>this.input</code>就是我们的XML文件。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231220232229660.png"
+                      alt="image-20231220232229660"
+                ></p>
+<h3 id="DocumentHandler"><a href="#DocumentHandler" class="headerlink" title="DocumentHandler"></a>DocumentHandler</h3><p>跟进<code>DocumentHandler.parse()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">parse</span><span class="params">(<span class="keyword">final</span> InputSource var1)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.acc == <span class="literal">null</span> &amp;&amp; <span class="literal">null</span> != System.getSecurityManager()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">SecurityException</span>(<span class="string">&quot;AccessControlContext is not set&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="type">AccessControlContext</span> <span class="variable">var2</span> <span class="operator">=</span> AccessController.getContext();</span><br><span class="line">        SharedSecrets.getJavaSecurityAccess().doIntersectionPrivilege(<span class="keyword">new</span> <span class="title class_">PrivilegedAction</span>&lt;Void&gt;() &#123;</span><br><span class="line">            <span class="keyword">public</span> Void <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    SAXParserFactory.newInstance().newSAXParser().parse(var1, DocumentHandler.<span class="built_in">this</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ParserConfigurationException var3) &#123;</span><br><span class="line">                    DocumentHandler.<span class="built_in">this</span>.handleException(var3);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (SAXException var4) &#123;</span><br><span class="line">                    <span class="type">Object</span> <span class="variable">var2</span> <span class="operator">=</span> var4.getException();</span><br><span class="line">                    <span class="keyword">if</span> (var2 == <span class="literal">null</span>) &#123;</span><br><span class="line">                        var2 = var4;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    DocumentHandler.<span class="built_in">this</span>.handleException((Exception)var2);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException var5) &#123;</span><br><span class="line">                    DocumentHandler.<span class="built_in">this</span>.handleException(var5);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, var2, <span class="built_in">this</span>.acc);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行了<code>SAXParserFactory.newInstance().newSAXParser().parse(var1, DocumentHandler.this)</code>。前面的<code>SAXParserFactory.newInstance().newSAXParser()</code>最终的执行结果是<code>SAXParser</code></p>
+<h3 id="SAXParser"><a href="#SAXParser" class="headerlink" title="SAXParser"></a>SAXParser</h3><p>跟进<code>SAXParser#parse()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">parse</span><span class="params">(InputSource is, DefaultHandler dh)</span></span><br><span class="line">    <span class="keyword">throws</span> SAXException, IOException &#123;</span><br><span class="line">    <span class="keyword">if</span> (is == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;InputSource cannot be null&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">XMLReader</span> <span class="variable">reader</span> <span class="operator">=</span> <span class="built_in">this</span>.getXMLReader();</span><br><span class="line">    <span class="keyword">if</span> (dh != <span class="literal">null</span>) &#123;</span><br><span class="line">        reader.setContentHandler(dh);</span><br><span class="line">        reader.setEntityResolver(dh);</span><br><span class="line">        reader.setErrorHandler(dh);</span><br><span class="line">        reader.setDTDHandler(dh);</span><br><span class="line">    &#125;</span><br><span class="line">    reader.parse(is);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里对XML文件的操作仅有<code>reader.parse(is)</code>。</p>
+<p>跟进<code>XMLReader#parse()</code>发现<code>XMLReader</code>是个接口，且实现类较多。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231201210831674.png"
+                      alt="image-20231201210831674"
+                ></p>
+<p>因此我们查看<code>SAXParser#parse()</code>中是如何获取的<code>XMLReader</code>。对应的代码为<code>this.getXMLReader()</code></p>
+<p>跟进<code>SAXParser#getXMLReader()</code>，发现这里是一个抽象方法。但该抽象方法仅一处实现。对应的是<code>SAXParserImpl#getXMLReader()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> org.xml.sax.XMLReader <span class="title function_">getXMLReader</span><span class="params">()</span> <span class="keyword">throws</span> SAXException;</span><br></pre></td></tr></table></figure>
+
+<p>跟进<code>SAXParserImpl#getXMLReader()</code>，返回了<code>xmlReader</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> XMLReader <span class="title function_">getXMLReader</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> xmlReader;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在<code>SAXParserImpl</code>类中<code>xmlReader</code>为<code>JAXPSAXParser</code>类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> JAXPSAXParser xmlReader;</span><br></pre></td></tr></table></figure>
+
+<p>因此回到<code>SAXParser#parse()</code>，最后执行的为<code>JAXPSAXParser#parse()</code>。</p>
+<h3 id="JAXPSAXParser"><a href="#JAXPSAXParser" class="headerlink" title="JAXPSAXParser"></a>JAXPSAXParser</h3><p>跟进<code>JAXPSAXParser#parse()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">parse</span><span class="params">(InputSource inputSource)</span></span><br><span class="line">    <span class="keyword">throws</span> SAXException, IOException &#123;</span><br><span class="line">    <span class="keyword">if</span> (fSAXParser != <span class="literal">null</span> &amp;&amp; fSAXParser.fSchemaValidator != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (fSAXParser.fSchemaValidationManager != <span class="literal">null</span>) &#123;</span><br><span class="line">            fSAXParser.fSchemaValidationManager.reset();</span><br><span class="line">            fSAXParser.fUnparsedEntityHandler.reset();</span><br><span class="line">        &#125;</span><br><span class="line">        resetSchemaValidator();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">super</span>.parse(inputSource);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发现执行了<code>super.parse(inputSource);</code>，往上跟其父类，跟到了<code>AbstractSAXParser#parse()</code>。</p>
+<h3 id="AbstractSAXParser"><a href="#AbstractSAXParser" class="headerlink" title="AbstractSAXParser"></a>AbstractSAXParser</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">parse</span><span class="params">(InputSource inputSource)</span></span><br><span class="line">    <span class="keyword">throws</span> SAXException, IOException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// parse document</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">XMLInputSource</span> <span class="variable">xmlInputSource</span> <span class="operator">=</span></span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">XMLInputSource</span>(inputSource.getPublicId(),</span><br><span class="line">                               inputSource.getSystemId(),</span><br><span class="line">                               <span class="literal">null</span>, <span class="literal">false</span>);</span><br><span class="line">        xmlInputSource.setByteStream(inputSource.getByteStream());</span><br><span class="line">        xmlInputSource.setCharacterStream(inputSource.getCharacterStream());</span><br><span class="line">        xmlInputSource.setEncoding(inputSource.getEncoding());</span><br><span class="line">        parse(xmlInputSource);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的代码主要是获取XML文件的部分信息，对初始传递进来的XML输入流做了个封装。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231220232830230.png"
+                      alt="image-20231220232830230"
+                ></p>
+<p>最后执行的<code>parse()</code>是其父类的方法。</p>
+<h3 id="XMLParser"><a href="#XMLParser" class="headerlink" title="XMLParser"></a>XMLParser</h3><p><code>XMLParser#parse()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">parse</span><span class="params">(XMLInputSource inputSource)</span></span><br><span class="line">    <span class="keyword">throws</span> XNIException, IOException &#123;</span><br><span class="line">    <span class="comment">// null indicates that the parser is called directly, initialize them</span></span><br><span class="line">    <span class="keyword">if</span> (securityManager == <span class="literal">null</span>) &#123;</span><br><span class="line">        securityManager = <span class="keyword">new</span> <span class="title class_">XMLSecurityManager</span>(<span class="literal">true</span>);</span><br><span class="line">        fConfiguration.setProperty(Constants.SECURITY_MANAGER, securityManager);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (securityPropertyManager == <span class="literal">null</span>) &#123;</span><br><span class="line">        securityPropertyManager = <span class="keyword">new</span> <span class="title class_">XMLSecurityPropertyManager</span>();</span><br><span class="line">        fConfiguration.setProperty(Constants.XML_SECURITY_PROPERTY_MANAGER, securityPropertyManager);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    reset();</span><br><span class="line">    fConfiguration.parse(inputSource);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码最后执行了<code>fConfiguration.parse(inputSource);</code>。这里的<code>fConfiguration</code>为<code>XML11Configuration</code>，静态分析没有分析出来为什么，查阅资料似乎和java的配置相关。</p>
+<p>注意此时的<code>inputSource</code>变量，和刚传进来时一样。buf为空字节流。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231220233200069.png"
+                      alt="image-20231220233200069"
+                ></p>
+<h3 id="XML11Configuration"><a href="#XML11Configuration" class="headerlink" title="XML11Configuration"></a>XML11Configuration</h3><p>跟进<code>XML11Configuration#parse()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">parse</span><span class="params">(XMLInputSource source)</span> <span class="keyword">throws</span> XNIException, IOException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (fParseInProgress) &#123;</span><br><span class="line">        <span class="comment">// REVISIT - need to add new error message</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">XNIException</span>(<span class="string">&quot;FWK005 parse may not be called while parsing.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    fParseInProgress = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        setInputSource(source);  #将输入流赋值给fInputSource</span><br><span class="line">        <span class="title function_">parse</span><span class="params">(<span class="literal">true</span>)</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (XNIException ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">XNIException</span>(ex);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        fParseInProgress = <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">// close all streams opened by xerces</span></span><br><span class="line">        <span class="built_in">this</span>.cleanup();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// parse(InputSource)</span></span><br></pre></td></tr></table></figure>
+
+<p>这里执行了<code>setInputSource(source)</code>，将XML输入流相关内容赋值给<code>fInputSource</code>。然后执行<code>parse(true)</code>。跟进<code>parse(true)</code>:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">parse</span><span class="params">(<span class="type">boolean</span> complete)</span> <span class="keyword">throws</span> XNIException, IOException &#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="comment">// reset and configure pipeline and set InputSource.</span></span><br><span class="line">    <span class="keyword">if</span> (fInputSource != <span class="literal">null</span>) &#123;  #判断是否有输入流</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            fValidationManager.reset();   #重置fValidationManager</span><br><span class="line">            fVersionDetector.reset(<span class="built_in">this</span>);  #重置<span class="type">fVersionDetector</span></span><br><span class="line">            <span class="variable">fConfigUpdated</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">            resetCommon();  #重置fCommonComponents</span><br><span class="line"></span><br><span class="line">            <span class="type">short</span> <span class="variable">version</span> <span class="operator">=</span> fVersionDetector.determineDocVersion(fInputSource);  #判断XML版本</span><br><span class="line">            <span class="keyword">if</span> (version == Constants.XML_VERSION_1_1) &#123;</span><br><span class="line">                initXML11Components();</span><br><span class="line">                configureXML11Pipeline();</span><br><span class="line">                resetXML11();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                configurePipeline();</span><br><span class="line">                reset();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// mark configuration as fixed</span></span><br><span class="line">            fConfigUpdated = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// resets and sets the pipeline.</span></span><br><span class="line">            fVersionDetector.startDocumentParsing((XMLEntityHandler) fCurrentScanner, version);</span><br><span class="line">            fInputSource = <span class="literal">null</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (XNIException ex) &#123;</span><br><span class="line">            <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">                ex.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">            <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">                ex.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">            <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">                ex.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> ex;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">            <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">                ex.printStackTrace();</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">XNIException</span>(ex);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> fCurrentScanner.scanDocument(complete);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (XNIException ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (RuntimeException ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception ex) &#123;</span><br><span class="line">        <span class="keyword">if</span> (PRINT_EXCEPTION_STACK_TRACE)</span><br><span class="line">            ex.printStackTrace();</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">XNIException</span>(ex);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// parse(boolean):boolean</span></span><br></pre></td></tr></table></figure>
+
+<p>代码先是对XML文档的版本信息做操作。然后执行<code>fCurrentScanner.scanDocument(complete)</code>。</p>
+<p>跟进发现是<code>XMLDocumentFragmentScannerImpl#scanDocument()</code></p>
+<h3 id="XMLDocumentFragmentScannerImpl"><a href="#XMLDocumentFragmentScannerImpl" class="headerlink" title="XMLDocumentFragmentScannerImpl"></a>XMLDocumentFragmentScannerImpl</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">scanDocument</span><span class="params">(<span class="type">boolean</span> complete)</span></span><br><span class="line"><span class="keyword">throws</span> IOException, XNIException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// keep dispatching &quot;events&quot;</span></span><br><span class="line">    fEntityManager.setEntityHandler(<span class="built_in">this</span>);</span><br><span class="line">    <span class="comment">//System.out.println(&quot; get Document Handler in NSDocumentHandler &quot; + fDocumentHandler );</span></span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">event</span> <span class="operator">=</span> next();</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="keyword">switch</span> (event) &#123;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.START_DOCUMENT :</span><br><span class="line">                <span class="comment">//fDocumentHandler.startDocument(fEntityManager.getEntityScanner(),fEntityManager.getEntityScanner().getVersion(),fNamespaceContext,null);// not able to get</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.START_ELEMENT :</span><br><span class="line">                <span class="comment">//System.out.println(&quot; in scann element&quot;);</span></span><br><span class="line">                <span class="comment">//fDocumentHandler.startElement(getElementQName(),fAttributes,null);</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.CHARACTERS :</span><br><span class="line">                fEntityScanner.checkNodeCount(fEntityScanner.fCurrentEntity);</span><br><span class="line">                fDocumentHandler.characters(getCharacterData(),<span class="literal">null</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.SPACE:</span><br><span class="line">                <span class="comment">//check if getCharacterData() is the right function to retrieve ignorableWhitespace information.</span></span><br><span class="line">                <span class="comment">//System.out.println(&quot;in the space&quot;);</span></span><br><span class="line">                <span class="comment">//fDocumentHandler.ignorableWhitespace(getCharacterData(), null);</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.ENTITY_REFERENCE :</span><br><span class="line">                fEntityScanner.checkNodeCount(fEntityScanner.fCurrentEntity);</span><br><span class="line">                <span class="comment">//entity reference callback are given in startEntity</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.PROCESSING_INSTRUCTION :</span><br><span class="line">                fEntityScanner.checkNodeCount(fEntityScanner.fCurrentEntity);</span><br><span class="line">                fDocumentHandler.processingInstruction(getPITarget(),getPIData(),<span class="literal">null</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.COMMENT :</span><br><span class="line">                fEntityScanner.checkNodeCount(fEntityScanner.fCurrentEntity);</span><br><span class="line">                fDocumentHandler.comment(getCharacterData(),<span class="literal">null</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.DTD :</span><br><span class="line">                <span class="comment">//all DTD related callbacks are handled in DTDScanner.</span></span><br><span class="line">                <span class="comment">//1. Stax doesn&#x27;t define DTD states as it does for XML Document.</span></span><br><span class="line">                <span class="comment">//therefore we don&#x27;t need to take care of anything here. So Just break;</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.CDATA:</span><br><span class="line">                fEntityScanner.checkNodeCount(fEntityScanner.fCurrentEntity);</span><br><span class="line">                fDocumentHandler.startCDATA(<span class="literal">null</span>);</span><br><span class="line">                <span class="comment">//xxx: check if CDATA values comes from getCharacterData() function</span></span><br><span class="line">                fDocumentHandler.characters(getCharacterData(),<span class="literal">null</span>);</span><br><span class="line">                fDocumentHandler.endCDATA(<span class="literal">null</span>);</span><br><span class="line">                <span class="comment">//System.out.println(&quot; in CDATA of the XMLNSDocumentScannerImpl&quot;);</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.NOTATION_DECLARATION :</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.ENTITY_DECLARATION :</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.NAMESPACE :</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.ATTRIBUTE :</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> XMLStreamConstants.END_ELEMENT :</span><br><span class="line">                <span class="comment">//do not give callback here.</span></span><br><span class="line">                <span class="comment">//this callback is given in scanEndElement function.</span></span><br><span class="line">                <span class="comment">//fDocumentHandler.endElement(getElementQName(),null);</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span> :</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">InternalError</span>(<span class="string">&quot;processing event: &quot;</span> + event);</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//System.out.println(&quot;here in before calling next&quot;);</span></span><br><span class="line">        event = next();</span><br><span class="line">        <span class="comment">//System.out.println(&quot;here in after calling next&quot;);</span></span><br><span class="line">    &#125; <span class="keyword">while</span> (event!=XMLStreamConstants.END_DOCUMENT &amp;&amp; complete);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(event == XMLStreamConstants.END_DOCUMENT) &#123;</span><br><span class="line">        fDocumentHandler.endDocument(<span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// scanDocument(boolean):boolean</span></span><br></pre></td></tr></table></figure>
+
+<p>这里用到了一个do-while循环，结合上switch-case来对XML文档进行解析。解析的过程在<code>next()</code>里面。推测根据<code>next()</code>逐行解析的结果来进行相应的处理。</p>
+<h4 id="XMLDocumentScannerImpl"><a href="#XMLDocumentScannerImpl" class="headerlink" title="XMLDocumentScannerImpl"></a>XMLDocumentScannerImpl</h4><p>跟进到<code>XMLDocumentScannerImpl#next()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">next</span><span class="params">()</span> <span class="keyword">throws</span> IOException, XNIException &#123;</span><br><span class="line">    <span class="keyword">return</span> fDriver.next();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续跟进到<code>XMLDeclDriver#next()</code></p>
+<h4 id="XMLDeclDriver"><a href="#XMLDeclDriver" class="headerlink" title="XMLDeclDriver"></a>XMLDeclDriver</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">int</span> <span class="title function_">next</span><span class="params">()</span> <span class="keyword">throws</span> IOException, XNIException &#123;</span><br><span class="line">    <span class="keyword">if</span>(DEBUG_NEXT)&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;NOW IN XMLDeclDriver&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// next driver is prolog regardless of whether there</span></span><br><span class="line">    <span class="comment">// is an XMLDecl in this document</span></span><br><span class="line">    setScannerState(SCANNER_STATE_PROLOG);</span><br><span class="line">    setDriver(fPrologDriver);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//System.out.println(&quot;fEntityScanner = &quot; + fEntityScanner);</span></span><br><span class="line">    <span class="comment">// scan XMLDecl</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (fEntityScanner.skipString(xmlDecl)) &#123;</span><br><span class="line">            fMarkupDepth++;</span><br><span class="line">            <span class="comment">// <span class="doctag">NOTE:</span> special case where document starts with a PI</span></span><br><span class="line">            <span class="comment">//       whose name starts with &quot;xml&quot; (e.g. &quot;xmlfoo&quot;)</span></span><br><span class="line">            <span class="keyword">if</span> (XMLChar.isName(fEntityScanner.peekChar())) &#123;</span><br><span class="line">                fStringBuffer.clear();</span><br><span class="line">                fStringBuffer.append(<span class="string">&quot;xml&quot;</span>);</span><br><span class="line">                <span class="keyword">while</span> (XMLChar.isName(fEntityScanner.peekChar())) &#123;</span><br><span class="line">                    fStringBuffer.append((<span class="type">char</span>)fEntityScanner.scanChar(<span class="literal">null</span>));</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="type">String</span> <span class="variable">target</span> <span class="operator">=</span> fSymbolTable.addSymbol(fStringBuffer.ch, fStringBuffer.offset, fStringBuffer.length);</span><br><span class="line">                <span class="comment">//this function should fill the data.. and set the fEvent object to this event.</span></span><br><span class="line">                fContentBuffer.clear() ;</span><br><span class="line">                scanPIData(target, fContentBuffer);</span><br><span class="line">                <span class="comment">//REVISIT:where else we can set this value to &#x27;true&#x27;</span></span><br><span class="line">                fEntityManager.fCurrentEntity.mayReadChunks = <span class="literal">true</span>;</span><br><span class="line">                <span class="comment">//return PI event since PI was encountered</span></span><br><span class="line">                <span class="keyword">return</span> XMLEvent.PROCESSING_INSTRUCTION ;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// standard XML declaration</span></span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                scanXMLDeclOrTextDecl(<span class="literal">false</span>);</span><br><span class="line">                <span class="comment">//REVISIT:where else we can set this value to &#x27;true&#x27;</span></span><br><span class="line">                fEntityManager.fCurrentEntity.mayReadChunks = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">return</span> XMLEvent.START_DOCUMENT;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="comment">//REVISIT:where else we can set this value to &#x27;true&#x27;</span></span><br><span class="line">            fEntityManager.fCurrentEntity.mayReadChunks = <span class="literal">true</span>;</span><br><span class="line">            <span class="comment">//In both case return the START_DOCUMENT. ony difference is that first block will</span></span><br><span class="line">            <span class="comment">//cosume the XML declaration if any.</span></span><br><span class="line">            <span class="keyword">return</span> XMLEvent.START_DOCUMENT;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//START_OF_THE_DOCUMENT</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// encoding errors</span></span><br><span class="line">    <span class="keyword">catch</span> (MalformedByteSequenceException e) &#123;</span><br><span class="line">        fErrorReporter.reportError(e.getDomain(), e.getKey(),</span><br><span class="line">                e.getArguments(), XMLErrorReporter.SEVERITY_FATAL_ERROR, e);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (CharConversionException e) &#123;</span><br><span class="line">        fErrorReporter.reportError(</span><br><span class="line">                XMLMessageFormatter.XML_DOMAIN,</span><br><span class="line">                <span class="string">&quot;CharConversionFailure&quot;</span>,</span><br><span class="line">                <span class="literal">null</span>,</span><br><span class="line">                XMLErrorReporter.SEVERITY_FATAL_ERROR, e);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// premature end of file</span></span><br><span class="line">    <span class="keyword">catch</span> (EOFException e) &#123;</span><br><span class="line">        reportFatalError(<span class="string">&quot;PrematureEOF&quot;</span>, <span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//throw e;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里执行了<code>setDriver(fPrologDriver)</code>对应的是<code>XMLDocumentFragmentScannerImpl#setDriver()</code>，将<code>fDriver</code>设置为<code>fPrologDriver</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">setDriver</span><span class="params">(Driver driver)</span> &#123;</span><br><span class="line">    fDriver = driver;</span><br><span class="line">    <span class="keyword">if</span> (DEBUG_DISPATCHER) &#123;</span><br><span class="line">        System.out.print(<span class="string">&quot;%%% setDriver: &quot;</span>);</span><br><span class="line">        System.out.print(getDriverName(driver));</span><br><span class="line">        System.out.println();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到<code>XMLDeclDriver#next()</code>，<code>fEntityScanner.skipString(xmlDecl)</code>是判断<code>fEntityScanner#fCurrentEntity#ch</code>是否以<code>&lt;?xml</code>开头</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204200041122.png"
+                      alt="image-20231204200041122"
+                ></p>
+<p>然后执行<code>scanXMLDeclOrTextDecl</code>，对应的是<code>XMLDocumentFragmentScannerImpl#scanXMLDeclOrTextDecl()</code></p>
+<h3 id="XMLDocumentFragmentScannerImpl-1"><a href="#XMLDocumentFragmentScannerImpl-1" class="headerlink" title="XMLDocumentFragmentScannerImpl"></a>XMLDocumentFragmentScannerImpl</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">scanXMLDeclOrTextDecl</span><span class="params">(<span class="type">boolean</span> scanningTextDecl)</span></span><br><span class="line"><span class="keyword">throws</span> IOException, XNIException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// scan decl</span></span><br><span class="line">    <span class="built_in">super</span>.scanXMLDeclOrTextDecl(scanningTextDecl, fStrings);</span><br><span class="line">    fMarkupDepth--;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// pseudo-attribute values</span></span><br><span class="line">    <span class="type">String</span> <span class="variable">version</span> <span class="operator">=</span> fStrings[<span class="number">0</span>];</span><br><span class="line">    <span class="type">String</span> <span class="variable">encoding</span> <span class="operator">=</span> fStrings[<span class="number">1</span>];</span><br><span class="line">    <span class="type">String</span> <span class="variable">standalone</span> <span class="operator">=</span> fStrings[<span class="number">2</span>];</span><br><span class="line">    fDeclaredEncoding = encoding;</span><br><span class="line">    <span class="comment">// set standalone</span></span><br><span class="line">    fStandaloneSet = standalone != <span class="literal">null</span>;</span><br><span class="line">    fStandalone = fStandaloneSet &amp;&amp; standalone.equals(<span class="string">&quot;yes&quot;</span>);</span><br><span class="line">    <span class="comment">///xxx see where its used.. this is not used anywhere. it may be useful for entity to store this information</span></span><br><span class="line">    <span class="comment">//but this information is only related with Document Entity.</span></span><br><span class="line">    fEntityManager.setStandalone(fStandalone);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">// call handler</span></span><br><span class="line">    <span class="keyword">if</span> (fDocumentHandler != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (scanningTextDecl) &#123;</span><br><span class="line">            fDocumentHandler.textDecl(version, encoding, <span class="literal">null</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            fDocumentHandler.xmlDecl(version, encoding, standalone, <span class="literal">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(version != <span class="literal">null</span>)&#123;</span><br><span class="line">        fEntityScanner.setVersion(version);</span><br><span class="line">        fEntityScanner.setXMLVersion(version);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// set encoding on reader, only if encoding was not specified by the application explicitly</span></span><br><span class="line">    <span class="keyword">if</span> (encoding != <span class="literal">null</span> &amp;&amp; !fEntityScanner.getCurrentEntity().isEncodingExternallySpecified()) &#123;</span><br><span class="line">         fEntityScanner.setEncoding(encoding);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125; <span class="comment">// scanXMLDeclOrTextDecl(boolean)</span></span><br></pre></td></tr></table></figure>
+
+<p>这里的代码看起来像是获取版本号，编码等信息。对应的是XML文档的第一行<code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204201012860.png"
+                      alt="image-20231204201012860"
+                ></p>
+<p>回到<code>XMLDocumentFragmentScannerImpl#scanDocument()</code>，经过switch-case后会去执行第二个<code>next()</code>。要注意此时执行的是<code>fPrologDriver#next()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204201304312.png"
+                      alt="image-20231204201304312"
+                ></p>
+<h4 id="fPrologDriver"><a href="#fPrologDriver" class="headerlink" title="fPrologDriver"></a>fPrologDriver</h4><p>跟进<code>fPrologDriver#next()</code>，这里也是一个do-while和switch-case的结合</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204201926896.png"
+                      alt="image-20231204201926896"
+                ></p>
+<p><code>fEntityScanner.skipSpaces()</code>是对空格和回车做跳过处理，刚才处理完第一行之后会有一个<code>\n</code>。</p>
+<p>自然<code>fEntityScanner.skipChar(&#39;&lt;&#39;, null)</code>就是跳过<code>&lt;</code></p>
+<p><code>setScannerState(SCANNER_STATE_START_OF_MARKUP)</code>进入其他分支。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204203146924.png"
+                      alt="image-20231204203146924"
+                ></p>
+<p><code>isValidNameStartChar(fEntityScanner.peekChar())</code>是取出下一个字母（这里取到的是<code>j</code>）,判断是否为<code>\r</code>，并判断是否合法。</p>
+<p><code>setScannerState(SCANNER_STATE_ROOT_ELEMENT)</code>是为了进入下一个分支。</p>
+<p><code>setDriver(fContentDriver)</code>将<code>fDriver</code>设置为<code>fContentDriver</code>，并调用其<code>next()</code></p>
+<h4 id="FragmentContentDriver"><a href="#FragmentContentDriver" class="headerlink" title="FragmentContentDriver"></a>FragmentContentDriver</h4><p>跟进到<code>FragmentContentDriver#next()</code>，这里仍然是switch-case的形式</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> SCANNER_STATE_ROOT_ELEMENT: &#123;</span><br><span class="line">    <span class="keyword">if</span> (scanRootElementHook()) &#123;</span><br><span class="line">        fEmptyElement = <span class="literal">true</span>;</span><br><span class="line">        <span class="comment">//rest would be taken care by fTrailingMiscDriver set by scanRootElementHook</span></span><br><span class="line">        <span class="keyword">return</span> XMLEvent.START_ELEMENT;</span><br><span class="line">    &#125;</span><br><span class="line">    setScannerState(SCANNER_STATE_CONTENT);</span><br><span class="line">    <span class="keyword">return</span> XMLEvent.START_ELEMENT ;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="XMLDocumentScannerImpl-1"><a href="#XMLDocumentScannerImpl-1" class="headerlink" title="XMLDocumentScannerImpl"></a>XMLDocumentScannerImpl</h4><p>回到<code>XMLDocumentScannerImpl.scanRootElementHook()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">scanRootElementHook</span><span class="params">()</span></span><br><span class="line"><span class="keyword">throws</span> IOException, XNIException &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (scanStartElement()) &#123;</span><br><span class="line">        setScannerState(SCANNER_STATE_TRAILING_MISC);</span><br><span class="line">        setDriver(fTrailingMiscDriver);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<h4 id="XMLDocumentFragmentScannerImpl-2"><a href="#XMLDocumentFragmentScannerImpl-2" class="headerlink" title="XMLDocumentFragmentScannerImpl"></a>XMLDocumentFragmentScannerImpl</h4><p>跟进到<code>XMLDocumentFragmentScannerImpl#scanStartElement()</code>，这里是对标签进行扫描</p>
+<img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204205539796.png"
+                      alt="image-20231204205539796"  
+                >
+
+<p>然后会进入一个do-while循环，</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231204210405758.png"
+                      alt="image-20231204210405758"
+                ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">checkDepth(rawname);  #检查 XML 元素的深度，此处查询java标签的深度</span><br><span class="line">(!seekCloseOfStartTag())&#123;   #寻找 XML 元素起始标签的闭合符号 &#x27;&gt;&#x27;</span><br><span class="line">    fReadingAttributes = true;</span><br><span class="line">    fAttributeCacheUsedCount =0;</span><br><span class="line">    fStringBufferIndex =0;</span><br><span class="line">    fAddDefaultAttr = true;</span><br><span class="line">    do &#123;  #循环是为了查找java标签是否存在其他属性，一直到匹配到&#x27;&gt;&#x27;时结束</span><br><span class="line">        scanAttribute(fAttributes);</span><br><span class="line">        if (fSecurityManager != null &amp;&amp; !fSecurityManager.isNoLimit(fElementAttributeLimit) &amp;&amp;</span><br><span class="line">                fAttributes.getLength() &gt; fElementAttributeLimit)&#123;</span><br><span class="line">            fErrorReporter.reportError(XMLMessageFormatter.XML_DOMAIN,</span><br><span class="line">                                         &quot;ElementAttributeLimit&quot;,</span><br><span class="line">                                         new Object[]&#123;rawname, fElementAttributeLimit &#125;,</span><br><span class="line">                                         XMLErrorReporter.SEVERITY_FATAL_ERROR );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125; while (!seekCloseOfStartTag());</span><br><span class="line">    fReadingAttributes=false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续执行到<code>fDocumentHandler.startElement(fElementQName, fAttributes, null)</code></p>
+<p>这里一直往下跟是<code>XMLDTDValidator#startElement</code>-<code>AbstractSAXParser#startElement</code>-<code>DocumentHandler#startElement</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231221002909766.png"
+                      alt="image-20231221002909766"
+                ></p>
+<h4 id="DocumentHandler-1"><a href="#DocumentHandler-1" class="headerlink" title="DocumentHandler"></a>DocumentHandler</h4><p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231221003714277.png"
+                      alt="image-20231221003714277"
+                ></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">startElement</span><span class="params">(String var1, String var2, String var3, Attributes var4)</span> <span class="keyword">throws</span> SAXException &#123;</span><br><span class="line">    <span class="type">ElementHandler</span> <span class="variable">var5</span> <span class="operator">=</span> <span class="built_in">this</span>.handler;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.handler = (ElementHandler)<span class="built_in">this</span>.getElementHandler(var3).newInstance();</span><br><span class="line">        <span class="built_in">this</span>.handler.setOwner(<span class="built_in">this</span>);</span><br><span class="line">        <span class="built_in">this</span>.handler.setParent(var5);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception var10) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">SAXException</span>(var10);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> <span class="variable">var6</span> <span class="operator">=</span> <span class="number">0</span>; var6 &lt; var4.getLength(); ++var6) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">var7</span> <span class="operator">=</span> var4.getQName(var6);</span><br><span class="line">            <span class="type">String</span> <span class="variable">var8</span> <span class="operator">=</span> var4.getValue(var6);</span><br><span class="line">            <span class="built_in">this</span>.handler.addAttribute(var7, var8);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RuntimeException var9) &#123;</span><br><span class="line">            <span class="built_in">this</span>.handleException(var9);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">this</span>.handler.startElement();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>this.handler = (ElementHandler)this.getElementHandler(var3).newInstance();</code>根据<code>java</code>标签，获取<code>JavaElementHandler</code>并实例化</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231221004621594.png"
+                      alt="image-20231221004621594"
+                ></p>
+<p>后面紧跟的循环是为了获取标签中的属性值。<code>&lt;java version=&quot;1.8.0_341&quot; class=&quot;java.beans.XMLDecoder&quot;&gt;</code>对应的属性和值为{“version”:”1.8.0_341”;”class”:””java.beans.XMLDecoder””}</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231221005112640.png"
+                      alt="image-20231221005112640"
+                ></p>
+<p>查看一下<code>this.handler.addAttribute(var7, var8)</code>，猜测应该是进行了存储</p>
+<h4 id="JavaElementHandler"><a href="#JavaElementHandler" class="headerlink" title="JavaElementHandler"></a>JavaElementHandler</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public void addAttribute(String var1, String var2) &#123;</span><br><span class="line">    if (!var1.equals(&quot;version&quot;)) &#123;</span><br><span class="line">        if (var1.equals(&quot;class&quot;)) &#123;</span><br><span class="line">            this.type = this.getOwner().findClass(var2);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            super.addAttribute(var1, var2);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里会判断属性是否为”class”。若是”class”，则通过<code>findClass()</code>来查找值对应的类，并赋值给<code>this.type</code>（赋值的意义暂不清楚）</p>
+<p>若不是则执行父类的<code>addAttribute</code></p>
+<h4 id="ElementHandler-addAttribute"><a href="#ElementHandler-addAttribute" class="headerlink" title="ElementHandler.addAttribute"></a>ElementHandler.addAttribute</h4><p>很明显这里是判断属性是否为”id”</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">public void addAttribute(String var1, String var2) &#123;</span><br><span class="line">    if (var1.equals(&quot;id&quot;)) &#123;</span><br><span class="line">        this.id = var2;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        throw new IllegalArgumentException(&quot;Unsupported attribute: &quot; + var1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="流程循环"><a href="#流程循环" class="headerlink" title="流程循环"></a>流程循环</h3><p>执行完此处后，针对XML第二行的解析就完成了。随后就会回到XMLDocumentFragmentScannerImpl的Switch-Case中，来对下一行进行解析。</p>
+<p>再往后很多代码就没必要看了。都是在针对标签进行解析，并获取标签属性以及对应的值。我们直接看每次解析流程的最后部分。</p>
+<h4 id="解析第三行"><a href="#解析第三行" class="headerlink" title="解析第三行"></a>解析第三行</h4><p>获取到标签<code>Object</code>的属性为<code>class</code>值为<code>java.lang.ProcessBuilder</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231222165332431.png"
+                      alt="image-20231222165332431"
+                ></p>
+<p>进入<code>ObjectElementHandler#addAttribute()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">addAttribute</span><span class="params">(String var1, String var2)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (var1.equals(<span class="string">&quot;idref&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.idref = var2;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (var1.equals(<span class="string">&quot;field&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.field = var2;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (var1.equals(<span class="string">&quot;index&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.index = Integer.valueOf(var2);</span><br><span class="line">        <span class="built_in">this</span>.addArgument(<span class="built_in">this</span>.index);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (var1.equals(<span class="string">&quot;property&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.property = var2;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (var1.equals(<span class="string">&quot;method&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.method = var2;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.addAttribute(var1, var2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于不满足<code>if</code>条件，因此进入父类<code>NewElementHandler#addAttribute()</code></p>
+<p>这里和上面<code>java</code>标签的解析类似</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addAttribute</span><span class="params">(String var1, String var2)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (var1.equals(<span class="string">&quot;class&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.type = <span class="built_in">this</span>.getOwner().findClass(var2);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.addAttribute(var1, var2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="解析第四行"><a href="#解析第四行" class="headerlink" title="解析第四行"></a>解析第四行</h4><p>解析标签<code>array</code>，属性为<code>class</code>，值为<code>String</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231222165857909.png"
+                      alt="image-20231222165857909"
+                ></p>
+<p>进入<code>ArrayElementHandler#addAttribute()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addAttribute</span><span class="params">(String var1, String var2)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (var1.equals(<span class="string">&quot;length&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.length = Integer.valueOf(var2);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.addAttribute(var1, var2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再进入父类<code>NewElementHandler#addAttribute()</code>，和上面第三行是一样的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addAttribute</span><span class="params">(String var1, String var2)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (var1.equals(<span class="string">&quot;class&quot;</span>)) &#123;</span><br><span class="line">        <span class="built_in">this</span>.type = <span class="built_in">this</span>.getOwner().findClass(var2);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="built_in">super</span>.addAttribute(var1, var2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>随后再解析到属性<code>length</code>，进入<code>ArrayElementHandler#addAttribute()</code>，并赋值给<code>this.length</code>。</p>
+<p>经过这两行可以发现各个标签会进入相对应的<code>XXXXElementHandler#addAttribute()</code>进行判断和赋值。</p>
+<p>后面第五行<code>void</code>标签进入<code>ObjectElementHandler#addAtribute()</code>，和<code>Object</code>标签相同。而<code>&lt;string&gt;calc&lt;/string&gt;</code>没有属性值，不进入解析。</p>
+<p>最后就是解析<code>&lt;void method=&quot;start&quot;&gt;&lt;/void&gt;</code>，这里和第五行的<code>&lt;void index=&quot;0&quot;&gt;</code>相同。</p>
+<h2 id="命令执行"><a href="#命令执行" class="headerlink" title="命令执行"></a>命令执行</h2><p>在第二章发现，<code>XMLDecoder</code>底层代码就是对XML文件逐行、逐标签进行解析的，整个过程相当繁杂。但是解析的过程中似乎并没有看到有命令执行的点。</p>
+<p>经过多次动态调试发现漏洞触发点是：<code>XMLDocumentFragmentScannerImpl#scanEndElement()</code>方法。该方法中的<code>fDocumentHandler.endElement(endElementName, null);</code>即命令执行点，具体为何存在命令执行后面会进行调试。</p>
+<p>简单总结一下XMLDecoder的解析过程：</p>
+<p>整个XML文档内容如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">java</span> <span class="attr">version</span>=<span class="string">&quot;1.8.0_341&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.beans.XMLDecoder&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">object</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.ProcessBuilder&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">array</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.String&quot;</span> <span class="attr">length</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">void</span> <span class="attr">index</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">string</span>&gt;</span>calc<span class="tag">&lt;/<span class="name">string</span>&gt;</span><span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">void</span> <span class="attr">method</span>=<span class="string">&quot;start&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">java</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>首先解析第一行XML文档，此时主要是获取版本信息和编码格式</li>
+<li>解析第二行XML文档，主要是解析<code>&lt;java&gt;</code>标签，获取其中的属性。要注意这里还没有解析到结束标签<code>&lt;/java&gt;</code></li>
+<li>解析第三行，解析<code>&lt;object&gt;</code>标签，获取属性，同样没有解析到结束标签<code>&lt;/object&gt;</code>。</li>
+<li>一直解析到第五行，解析到<code>&lt;/string&gt;</code>标签，这是整个解析过程中解析到的第一个结束标签。（先进后出。<strong>推测</strong>这里是个栈结构，将标签存储，解析到结束标签时再取出）</li>
+<li>此时会针对结束标签执行<code>fDocumentHandler.endElement(endElementName, null)</code>方法。</li>
+</ol>
+<h3 id="lt-string-gt"><a href="#lt-string-gt" class="headerlink" title="&lt;string&gt;"></a>&lt;string&gt;</h3><p>针对<code>fDocumentHandler.endElement(endElementName, null)</code>下断点调试，看看为何会产生命令执行</p>
+<p>可以看到<code>endElementName</code>为<code>string</code>，即结束标签名为<code>string</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226164010940.png"
+                      alt="image-20231226164010940"
+                ></p>
+<p>跟进到<code>AbstractSAXParser#endElement()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226164308718.png"
+                      alt="image-20231226164308718"
+                ></p>
+<p>通过断点处的方法跟入到<code>DocumentHandler#endElement()</code>。查看动态调试的信息发现，这里的<code>this.handler</code>是<code>StringElementHandler</code>，其中<code>sb</code>为<code>&lt;string&gt;</code>标签的值<code>calc</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226164619910.png"
+                      alt="image-20231226164619910"
+                ></p>
+<p>继续通过断点跟入到<code>ElementHandler#endElement()</code>。首先通过<code>getValueObject</code>获取标签对应的值，这里获取到<code>calc</code>。若存在父类，则交给父类处理。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226164729412.png"
+                      alt="image-20231226164729412"
+                ></p>
+<p>跟进到其父类<code>NewElementHandler#addArgument()</code>。这里是将<code>calc</code>放到了一个数列里。（很明显是后续命令执行的参数数列）</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226165712297.png"
+                      alt="image-20231226165712297"
+                ></p>
+<p>随后回到了<code>DocumentHandler#endElement()</code>。可以看到将handle指向了其父类，根据调试信息发现其父类为<code>VoidElementHandler</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">this</span>.handler = <span class="built_in">this</span>.handler.getParent();</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226170550892.png"
+                      alt="image-20231226170550892"
+                ></p>
+<p>很明显这里与我们上面XML文档的<code>&lt;void index=&quot;0&quot;&gt;&lt;string&gt;calc&lt;/string&gt;&lt;/void&gt;</code>对上了。<code>&lt;string&gt;</code>标签的父标签是<code>&lt;void&gt;</code>标签。</p>
+<p>上面我们推断标签之间是使用了先进后出的栈结构。现在来看应当是使用了父子类的链表结构。每次解析到结束标签后，都会返回上层父标签，一直到不存在父标签为止。</p>
+<h3 id="lt-void-gt"><a href="#lt-void-gt" class="headerlink" title="&lt;void&gt;"></a>&lt;void&gt;</h3><p>接下来解析到<code>&lt;/viod&gt;</code>标签</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226174108616.png"
+                      alt="image-20231226174108616"
+                ></p>
+<p>和上面类似，跟进到<code>DocumentHandler#endElement()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226174230611.png"
+                      alt="image-20231226174230611"
+                ></p>
+<p>再跟进到<code>ElementHandler#endElement()</code>。执行<code>this.getValueObject()</code>。</p>
+<p>需要注意的是这里执行的是<code>VoidElementHandler.getValueObject()</code>。但由于<code>VoidElementHandler</code>本身没有<code>getValueObject</code>方法，因此此处执行其父类<code>NewElementHandler.getValueObject()</code>。<code>NewElementHandler.getValueObject()</code>会指向<code>ObjectElementHandler.getValueObject()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226174531884.png"
+                      alt="image-20231226174531884"
+                ></p>
+<p>查看<code>ObjectElementHandler.getValueObject()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226181120181.png"
+                      alt="image-20231226181120181"
+                ></p>
+<p>这里的<code>Expression</code>和<code>ValueObjectImpl</code>并没有做什么操作</p>
+<h3 id="lt-array-gt"><a href="#lt-array-gt" class="headerlink" title="&lt;array&gt;"></a>&lt;array&gt;</h3><p>前面的过程跟上面两个标签一样。</p>
+<p>我们直接看<code>ElementHandler#endElement()</code>。相关的信息在调试信息里面写的蛮清楚的。这里和<code>&lt;string&gt;</code>标签类似。获取值，然后返回其父类。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226214630587.png"
+                      alt="image-20231226214630587"
+                ></p>
+<p>至此解析完了以下部分</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">array</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.String&quot;</span> <span class="attr">length</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">void</span> <span class="attr">index</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">string</span>&gt;</span>calc<span class="tag">&lt;/<span class="name">string</span>&gt;</span><span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="lt-void-gt-1"><a href="#lt-void-gt-1" class="headerlink" title="&lt;void&gt;"></a>&lt;void&gt;</h3><p><code>&lt;array&gt;</code>标签解析完后就开始解析<code>&lt;void method=&quot;start&quot;&gt;&lt;/void&gt;</code>，看一下解析到这个<code>&lt;/void&gt;</code>标签是如何处理的。</p>
+<p>前面的解析流程和上一个<code>&lt;/void&gt;</code>相似，一直到<code>ObjectElementHandler.getValueObject()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226224615943.png"
+                      alt="image-20231226224615943"
+                ></p>
+<h4 id="lt-object-gt"><a href="#lt-object-gt" class="headerlink" title="&lt;object&gt;"></a>&lt;object&gt;</h4><p>跟进<code>this.getContextBean()</code>到<code>ElementHandler#getContextBean()</code>。这里执行了<code>this.parent.getValueObject()</code>，这里的父类是<code>ObjectElementHandler</code>，对应的是<code>&lt;object class=&quot;java.lang.ProcessBuilder&quot;&gt;</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226225009283.png"
+                      alt="image-20231226225009283"
+                ></p>
+<p>跟进到<code>NewElementHandler#getValueObject()</code></p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226225413494.png"
+                      alt="image-20231226225413494"
+                ></p>
+<p>进一步跟到<code>ObjectElementHandler#getValueObject()</code>。这里经过多个判断后，<code>var3</code>为<code>ProcessBuilder</code>，<code>var4</code>为<code>new</code>方法，<code>var2</code>为参数<code>calc</code>。</p>
+<p>此处的<code>var5.getValue()</code>返回的是实例化后的<code>ProcessBuilder</code>类。具体如何返回的感兴趣可以看看，用到了反射，略微复杂，但是简单。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231228161958185.png"
+                      alt="image-20231228161958185"
+                ></p>
+<p><code>var5.getValue()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> Object <span class="title function_">getValue</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="keyword">if</span> (value == unbound) &#123;</span><br><span class="line">        setValue(invoke());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226233900484.png"
+                      alt="image-20231226233900484"
+                ></p>
+<p><code>ProcessBuilder</code>实例化结束后，回到<code>void</code>标签的<code>ObjectElementHandler.getValueObject()</code>，可以看到<code>var5</code>为<code>ProcessBuilder.start()</code>。</p>
+<p><img  
+                     lazyload
+                     alt="image"
+                     data-src="https://yearnxyl.oss-cn-beijing.aliyuncs.com/img/image-20231226231153002.png"
+                      alt="image-20231226231153002"
+                ></p>
+<p>再往后就和实例化<code>ProcessBuilder</code>的流程类似了，通过<code>var5.getValue()</code>实现了命令执行。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>整个XML文档内容如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">java</span> <span class="attr">version</span>=<span class="string">&quot;1.8.0_341&quot;</span> <span class="attr">class</span>=<span class="string">&quot;java.beans.XMLDecoder&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">object</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.ProcessBuilder&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">array</span> <span class="attr">class</span>=<span class="string">&quot;java.lang.String&quot;</span> <span class="attr">length</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">void</span> <span class="attr">index</span>=<span class="string">&quot;0&quot;</span>&gt;</span><span class="tag">&lt;<span class="name">string</span>&gt;</span>calc<span class="tag">&lt;/<span class="name">string</span>&gt;</span><span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">void</span> <span class="attr">method</span>=<span class="string">&quot;start&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">void</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">object</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">java</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>首先解析第一行XML文档，此时主要是获取版本信息和编码格式</li>
+<li>解析第二行XML文档，主要是解析<code>&lt;java&gt;</code>标签，获取其中的属性和属性值。</li>
+<li>解析第三行，解析<code>&lt;object&gt;</code>标签，获取属性和属性值。</li>
+<li>一直解析到第五行，解析到<code>&lt;/string&gt;</code>标签，这是整个解析过程中解析到的第一个结束标签。遇到结束标签后会获取标签中的值（此处为<code>calc</code>），并返回其父标签。</li>
+<li>在解析<code>&lt;void method=&quot;start&quot;&gt;&lt;/void&gt;</code>的过程中，会获取其父标签的属性值（此处为<code>ProcessBuilder</code>），并进行实例化。</li>
+<li>解析完<code>&lt;void method=&quot;start&quot;&gt;&lt;/void&gt;</code>标签后，获取属性值<code>start</code>，并执行<code>start</code>方法，以此来实现命令执行。</li>
+</ol>
+
+            </div>
+
+            
+                <div class="post-copyright-info">
+                    
+<div class="article-copyright-info-container">
+    <ul class="copyright-info-content">
+        <li class="post-title">
+            <span class="type">本文标题</span>：<span class="content">XMLDecoder反序列化</span>
+        </li>
+        <li class="post-author">
+            <span class="type">本文作者</span>：<span class="content">yearnxyl</span>
+        </li>
+        <li class="post-time">
+            <span class="type">创建时间</span>：<span class="content">2023-10-19 21:22:26</span>
+        </li>
+        <li class="post-link">
+            <span class="type">本文链接</span>：<span class="content">2023/10/19/XMLDecoder反序列化/</span>
+        </li>
+        <li class="post-license">
+            <span class="type">版权声明</span>：<span class="content">本博客所有文章除特别声明外，均采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">BY-NC-SA</a> 许可协议。转载请注明出处！</span>
+        </li>
+    </ul>
+    <div class="copy-copyright-info flex-center tooltip" data-content="复制版权信息" data-offset-y="-2px">
+        <i class="fa-solid fa-copy"></i>
+    </div>
+</div>
+
+                </div>
+            
+
+            
+                <ul class="post-tags-box">
+                    
+                        <li class="tag-item">
+                            <a href="/tags/Java%E5%AE%89%E5%85%A8/">#Java安全</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            
+
+            
+                <div class="article-nav">
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2023/09/11/CommonsCollections5%E5%92%8CCommonsCollections7/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">CommonsCollections5和CommonsCollections7</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
+            <div class="toc-content-container">
+                <div class="post-toc-wrap">
+    <div class="post-toc">
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#XMLEncoder%E5%92%8CXMLDecoder"><span class="nav-number">1.</span> <span class="nav-text">XMLEncoder和XMLDecoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#XMLDecoder%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">XMLDecoder流程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XMLDecoder"><span class="nav-number">2.1.</span> <span class="nav-text">XMLDecoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DocumentHandler"><span class="nav-number">2.2.</span> <span class="nav-text">DocumentHandler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SAXParser"><span class="nav-number">2.3.</span> <span class="nav-text">SAXParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JAXPSAXParser"><span class="nav-number">2.4.</span> <span class="nav-text">JAXPSAXParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AbstractSAXParser"><span class="nav-number">2.5.</span> <span class="nav-text">AbstractSAXParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XMLParser"><span class="nav-number">2.6.</span> <span class="nav-text">XMLParser</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XML11Configuration"><span class="nav-number">2.7.</span> <span class="nav-text">XML11Configuration</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XMLDocumentFragmentScannerImpl"><span class="nav-number">2.8.</span> <span class="nav-text">XMLDocumentFragmentScannerImpl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#XMLDocumentScannerImpl"><span class="nav-number">2.8.1.</span> <span class="nav-text">XMLDocumentScannerImpl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#XMLDeclDriver"><span class="nav-number">2.8.2.</span> <span class="nav-text">XMLDeclDriver</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XMLDocumentFragmentScannerImpl-1"><span class="nav-number">2.9.</span> <span class="nav-text">XMLDocumentFragmentScannerImpl</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#fPrologDriver"><span class="nav-number">2.9.1.</span> <span class="nav-text">fPrologDriver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#FragmentContentDriver"><span class="nav-number">2.9.2.</span> <span class="nav-text">FragmentContentDriver</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#XMLDocumentScannerImpl-1"><span class="nav-number">2.9.3.</span> <span class="nav-text">XMLDocumentScannerImpl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#XMLDocumentFragmentScannerImpl-2"><span class="nav-number">2.9.4.</span> <span class="nav-text">XMLDocumentFragmentScannerImpl</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DocumentHandler-1"><span class="nav-number">2.9.5.</span> <span class="nav-text">DocumentHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JavaElementHandler"><span class="nav-number">2.9.6.</span> <span class="nav-text">JavaElementHandler</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ElementHandler-addAttribute"><span class="nav-number">2.9.7.</span> <span class="nav-text">ElementHandler.addAttribute</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%BE%AA%E7%8E%AF"><span class="nav-number">2.10.</span> <span class="nav-text">流程循环</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E7%AC%AC%E4%B8%89%E8%A1%8C"><span class="nav-number">2.10.1.</span> <span class="nav-text">解析第三行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E6%9E%90%E7%AC%AC%E5%9B%9B%E8%A1%8C"><span class="nav-number">2.10.2.</span> <span class="nav-text">解析第四行</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C"><span class="nav-number">3.</span> <span class="nav-text">命令执行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-string-gt"><span class="nav-number">3.1.</span> <span class="nav-text">&lt;string&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-void-gt"><span class="nav-number">3.2.</span> <span class="nav-text">&lt;void&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-array-gt"><span class="nav-number">3.3.</span> <span class="nav-text">&lt;array&gt;</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#lt-void-gt-1"><span class="nav-number">3.4.</span> <span class="nav-text">&lt;void&gt;</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#lt-object-gt"><span class="nav-number">3.4.1.</span> <span class="nav-text">&lt;object&gt;</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+
+        </div>
+
+        <div class="page-main-content-bottom">
+            
+<footer class="footer">
+    <div class="info-container">
+        <div class="copyright-info info-item">
+            &copy;
+            
+                <span>2020</span> -
+            
+            2023
+            
+                &nbsp;<i class="fas fa-heart icon-animate"></i>
+                &nbsp;<a href="/">yearnxyl</a>
+            
+        </div>
+        
+        <div class="theme-info info-item">
+            由 <a target="_blank" href="https://hexo.io">Hexo</a> 驱动&nbsp;|&nbsp;主题&nbsp;<a class="theme-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep v3.6.1</a>
+        </div>
+        
+        
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-bottom-side-tools">
+        <div class="side-tools-container">
+    <ul class="side-tools-list">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-dark-light-toggle flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list">
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="tools-item tool-scroll-to-top flex-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/dark-light-toggle.js"></script>
+
+
+
+
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+
+    
+<script src="/js/code-block.js"></script>
+
+
+
+
+    
+<script src="/js/lazyload.js"></script>
+
+
+
+<div class="post-scripts pjax">
+    
+        
+<script src="/js/post-helper.js"></script>
+
+        
+            
+<script src="/js/libs/anime.min.js"></script>
+
+        
+        
+            
+<script src="/js/toc.js"></script>
+
+        
+    
+</div>
+
+
+    
+<script src="/js/libs/pjax.min.js"></script>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        window.pjax = new Pjax({
+            selectors: [
+                'head title',
+                '.page-container',
+                '.pjax'
+            ],
+            history: true,
+            debug: false,
+            cacheBust: false,
+            timeout: 0,
+            analytics: false,
+            currentUrlFullReload: false,
+            scrollRestoration: false,
+            // scrollTo: true,
+        });
+
+        document.addEventListener('pjax:send', () => {
+            KEEP.utils.pjaxProgressBarStart();
+        });
+
+        document.addEventListener('pjax:complete', () => {
+            KEEP.utils.pjaxProgressBarEnd();
+            window.pjax.executeScripts(document.querySelectorAll('script[data-pjax], .pjax script'));
+            KEEP.refresh();
+        });
+    });
+</script>
+
+
+
+</body>
+</html>
